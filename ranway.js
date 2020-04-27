@@ -13,12 +13,12 @@ const logger = winston.createLogger({
         // - Write all logs with level `info` and below to `combined.log`
         //
         new winston.transports.File({ filename: 'error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'debug.log', options: { flags: 'w' } })
+        new winston.transports.File({ filename: 'debug.log' })
     ]
 });
 
 class Product {
-    // fieldNames = [ranway, heel, category_eng, seasson ]
+    // fieldNames = [ranway, heel, category_eng, season ]
     constructor(name){
         this.fieldName = name;
     }
@@ -53,7 +53,7 @@ class Product {
             {
                 id: key,
                 attribute: attributeName,
-                value: attributeValue // text, boolean format
+                value: attributeValue // text, array format for attribute of checkbox type
 
             }).then(products => {
             logger.info( products.id + " : " + products.name + " : " + products.attributes[attributeName])
@@ -91,7 +91,7 @@ class Product {
 
 async function run(){
 
-    let product = new Product("checkbox");
+    let product = new Product("season");
     console.log(" Running..." + product.fieldName);
     let products = await product.getProductsWithField(product.fieldName); // result => array of products or empty array
 
