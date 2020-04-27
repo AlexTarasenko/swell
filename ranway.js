@@ -45,18 +45,15 @@ class Attribute {
                 "ranway":{$exists: true} // fieldName
 
             }).then(products => { // products is a result of promise execution
-            logger.info(" GET product[id] with field " + fieldName +" [value] :"); // // callback on resolve
+            logger.info(" GET product[id] with field " + fieldName +" [value] :"); // callback on resolve
             let array = [];
-            if ( products.results && products.results.length > 1){
+            if ( products.results && products.results.length > 0){
                 let count = products.results.length;
                 logger.info(" Products count:" + count );
                 products.results.forEach(product => {                                   // fieldName
                     logger.info(product.id + " : " + product.name  + " : " + product.ranway);
                     array[product.id] = product.ranway;
                 });
-            }else {
-                array[products.id] = products.ranway;
-                logger.info( products.id + " : " + products.name  + " : " + products.ranway);
             }
             return array;
         }).catch(err => {
@@ -90,16 +87,13 @@ class Attribute {
             let array = [];
             logger.info(" GET product[id] with attributes " + attributeName + "[value] :");
 
-            if ( products.results && products.results.length > 1){
+            if ( products.results && products.results.length > 0){
                 let count = products.results.length;
                 logger.info(" Products count: " + count );
                 products.results.forEach(product =>{
                     logger.info("product_id: " + product.id + " , name: " + product.name  + " , ranway: " + product.attributes.ranway);
                     array[product.id] = product.attributes.ranway;
                 });
-            }else {
-                logger.info("product_id: " + products.id + " , name: " + products.name  + " , ranway: " + products.attributes.ranway);
-                array[products.id] = products.attributes.ranway;
             }
             return array;
 
@@ -117,7 +111,7 @@ async function run(){
 
     let ranway = new Attribute("ranway");
     // GET products with a field: ranway
-    let products = await ranway.getProductsWithField(ranway.fieldName); // result => array of products or 1 element or 0 elements
+    let products = await ranway.getProductsWithField(ranway.fieldName); // result => array of products or empty array
 
     if ( Object.entries(products)){
         console.table(products);
