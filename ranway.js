@@ -22,7 +22,6 @@ const prompt = require('prompt-sync')({sigint: true});
 * GET products with the field
 * returns {field , product_id} for example:
 * [
-    { ranway: 'true', id: '5ea29d602a07ee687dc04da3' },
     { ranway: 'true', id: '5e9d51c709d4900c9eff118f' },
     { ranway: 'false', id: '5e984d27d4af9b0a952f56b9' }
   ]
@@ -78,7 +77,6 @@ const threshold = parseInt(process.argv.slice(2));
 
 async function run(field, threshold) {
     var threshold = (threshold < LIMIT) ? threshold : LIMIT;
-    console.log(threshold);
     console.log(" Running..." + field );
     let page = 1;
     try {
