@@ -16,12 +16,16 @@ const logger = winston.createLogger({
         new winston.transports.File({filename: 'debug.log'})
     ]
 });
-const fields = ["ranway", "heel", "category_eng", "season"];
-
+const prompt = require('prompt-sync')({sigint: true});
 
 /*
 * GET products with the field
-* returns {field , product_id}
+* returns {field , product_id} for example:
+* [
+    { ranway: 'true', id: '5ea29d602a07ee687dc04da3' },
+    { ranway: 'true', id: '5e9d51c709d4900c9eff118f' },
+    { ranway: 'false', id: '5e984d27d4af9b0a952f56b9' }
+  ]
 */
 function getProductsWithField(field, options) {
 
@@ -35,7 +39,8 @@ function getProductsWithField(field, options) {
 }
 
 /*
-* PUT attributes data to the product
+* PUT empty badges attribute to all products. It is an array with 2 fields ranway, popular
+* check if field ranway is set, then add it to array
 * returns results
 */
 function setDataToProducts(products) {
@@ -49,47 +54,41 @@ function setDataToProducts(products) {
         products.map(product => {
             const {id, ...attributes} = product;
 
+            attributes.badges = [];
+            if (attributes.ranway){
+                delete attributes.ranway;
+                attributes.badges = ["ranway"];
+            }
+
             return {
                 url: `/products/${id}`,
                 method: 'PUT',
                 data: {
-                    attributes
+                    attributes,
                 }
             }
         }),
     );
 }
 
-/*
-* POST attributes data to the product
-* returns results
-*/
-async function createProducts(field){
-    await swell.post(`/products`,
-        {
-            name: Math.random()*300,
-            sku: Math.random()*10,
-            active: true,
-            price: 99.00,
-            [field]: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5),
-        }
-    )
-}
+const fields = ["ranway", "heel", "category_ENG", "season"];
+// note category_ENG != category_eng
+const LIMIT = 100;
+const threshold = parseInt(process.argv.slice(2));
 
-
-async function run(field) {
-
-    console.log(" Running..." + field);
+async function run(field, threshold) {
+    var threshold = (threshold < LIMIT) ? threshold : LIMIT;
+    console.log(threshold);
+    console.log(" Running..." + field );
     let page = 1;
     try {
         while (true) {
             // Get products
-            const products = await getProductsWithField(field, {limit: 100, page});
+            const products = await getProductsWithField(field, {limit: threshold, page});
             logger.info(products);
-            // Check if there is an attribute with a field: value
             // Update products
             const updatedProducts = await setDataToProducts(products);
-            if (products.length < 100) {
+            if (products.length < LIMIT) {
                 break;
             }
             page++;
@@ -99,5 +98,5 @@ async function run(field) {
     }
 }
 
-fields.forEach(field => run(field));
+fields.forEach(field => run(field, threshold));
 
