@@ -16,7 +16,6 @@ const logger = winston.createLogger({
         new winston.transports.File({filename: 'debug.log'})
     ]
 });
-const prompt = require('prompt-sync')({sigint: true});
 
 /*
 * GET products with the field
