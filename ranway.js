@@ -53,9 +53,11 @@ function setDataToProducts(products) {
             const {id, ...attributes} = product;
 
             attributes.badges = [];
-            if (attributes.ranway){
+            if (typeof(attributes.ranway) !== 'undefined'){ // ranway = false, "false"
+                if ( attributes.ranway && attributes.ranway != 'false' ){
+                    attributes.badges = ["ranway"];
+                }
                 delete attributes.ranway;
-                attributes.badges = ["ranway"];
             }
 
             return {
@@ -68,6 +70,10 @@ function setDataToProducts(products) {
         }),
     );
 }
+
+
+
+
 
 const fields = ["ranway", "heel", "category_ENG", "season"];
 // note category_ENG != category_eng
