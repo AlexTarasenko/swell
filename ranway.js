@@ -72,10 +72,10 @@ function setDataToProducts(products) {
 const fields = ["ranway", "heel", "category_ENG", "season"];
 // note category_ENG != category_eng
 const LIMIT = 100;
-const threshold = parseInt(process.argv.slice(2));
+const limit = parseInt(process.argv.slice(2));
 
-async function run(field, threshold) {
-    var threshold = (threshold < LIMIT) ? threshold : LIMIT;
+async function run(field, limit) {
+    let threshold = (limit && limit < LIMIT) ? limit : LIMIT;
     console.log(" Running..." + field );
     let page = 1;
     try {
@@ -95,5 +95,5 @@ async function run(field, threshold) {
     }
 }
 
-fields.forEach(field => run(field, threshold));
+fields.forEach(field => run(field, limit));
 
